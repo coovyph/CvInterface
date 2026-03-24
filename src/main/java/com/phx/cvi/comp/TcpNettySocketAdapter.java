@@ -2,6 +2,8 @@ package com.phx.cvi.comp;
 
 import java.util.Map;
 
+import com.cvj.msg.IMsg;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -17,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  * ISO socket service handling
  */
 @Slf4j
-public class IsoNettySocketAdapter implements ISocketAdapter{
+public class TcpNettySocketAdapter<T extends IMsg> implements ISocketAdapter{
 	public final static int ST_SERVER = 1;
 	public final static int ST_CLIENT = 0;
 
@@ -30,14 +32,14 @@ public class IsoNettySocketAdapter implements ISocketAdapter{
 
 	private Map<String,Boolean> tcpOptions; 
 
-	private TcpHandler tcpHandler;
+	private TcpHandler<T> tcpHandler;
 
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
 	private Channel hostChannel;
 
 
-	public IsoNettySocketAdapter(TcpHandler inTcpHandler) {
+	public TcpNettySocketAdapter(TcpHandler<T> inTcpHandler) {
 		this.tcpHandler = inTcpHandler;
 	}
 
@@ -113,46 +115,6 @@ public class IsoNettySocketAdapter implements ISocketAdapter{
 		}else {
 			initializeClient();
 		}
-		/*
-		int maxSessions = 10;
-		this.bossGroup = new NioEventLoopGroup(1);
-		this.workerGroup = new NioEventLoopGroup(maxSessions);
-
-		ServerBootstrap bootstrap = new ServerBootstrap();
-		bootstrap.group(this.bossGroup, this.workerGroup)
-		.channel(NioServerSocketChannel.class)
-		.childHandler(new ChannelInitializer<SocketChannel>() {
-
-			@Override
-			protected void initChannel(SocketChannel ch) throws Exception {
-				ChannelPipeline p = ch.pipeline();
-
-				//need customization
-				p.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 2, 0, 2));
-
-				//iso message decoder
-
-				p.addLast(busLoopGroup,tcpHandler);
-
-				//iso message encoder
-
-				//need customization
-				p.addLast(new LengthFieldPrepender(2));
-
-
-
-
-			}
-		});
-
-		ChannelFuture future = null;
-		try{
-			future = bootstrap.bind(5000).sync();
-		}catch(InterruptedException ie) {
-			log.error("InterruptedException occurs ", ie);
-		}
-		this.serverChannel = future.channel();
-		 */
 	}
 
 	@Override

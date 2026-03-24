@@ -23,9 +23,9 @@ public class IsoMux implements IMux<IsoMsg>{
 	private BlockingQueue<IsoMuxObject<IsoMsg>> queue;
 	private List<Integer> keyFields;
 
-	private ISender sender;
+	private ISender<IsoMsg> sender;
 
-	public IsoMux(BlockingQueue<IsoMuxObject<IsoMsg>> iQueue,ISender iSender,String rawKeyField) {
+	public IsoMux(BlockingQueue<IsoMuxObject<IsoMsg>> iQueue,ISender<IsoMsg> iSender,String rawKeyField) {
 		this.queue = iQueue;
 		this.sender = iSender;
 		this.map  = new HashMap<>();

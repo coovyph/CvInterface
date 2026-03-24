@@ -4,7 +4,7 @@ import com.cvj.msg.IMsg;
 
 import io.netty.channel.Channel;
 
-public interface IBusInterface<T extends IMsg> {
+public interface ITcpInterface<T extends IMsg> {
 
 	public void onActiveSession(Channel ch);
 	public void onInActiveSession(Channel ch);

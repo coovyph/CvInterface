@@ -18,10 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class TcpHandler<T extends IMsg> extends SimpleChannelInboundHandler<T>{
 
 	private IChannelRegistry channelRegistry;
-	private IBusInterface<T> busInterface;
+	private ITcpInterface<T> busInterface;
 	private IMux<T> mux;
 	
-	public TcpHandler(IChannelRegistry iChannelRegistry,IBusInterface<T> iBusInterface,IMux<T> iMux) {
+	public TcpHandler(IChannelRegistry iChannelRegistry,ITcpInterface<T> iBusInterface,IMux<T> iMux) {
 		this.channelRegistry = iChannelRegistry;
 		this.busInterface = iBusInterface;
 		this.mux = iMux;
