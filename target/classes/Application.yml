@@ -1,0 +1,13 @@
+#TCP IP socket connection
+com.cvi:
+  socket:
+    type: server #type of socket connection client/server
+    host: #remote host for client , or binding host for server
+    port: 5000#remote prt for client, or listen port for server
+    
+com.cv.spj:
+  connection:
+    id: outSa
+    type: client
+	
+    

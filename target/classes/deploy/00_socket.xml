@@ -1,0 +1,23 @@
+<beans>
+  <bean id="coreChannelRegistry" class="com.phx.cvi.service.impl.ChannelRegistryImpl">
+  
+  </bean>
+  <bean id="coreInterfaceDriver" class="com.phx.cvi.service.impl.BusInterfaceDriverServiceImpl">
+     <constructor-arg ref="coreInterface"/>
+  </bean>
+  <bean id="coreIsoHandler" class="com.phx.cvi.service.impl.IsoTcpHandler">
+     <constructor-arg index="0" ref="coreChannelRegistry"/>
+     <constructor-arg index="1" ref="coreInterfaceDriver"/>
+  </bean>
+  <bean id="coreSa" class="com.phx.cvi.comp.impl.IsoNettySocketAdapter">
+     <constructor-arg index="0" ref="coreIsoHandler"/>
+     <property name="type" value="client"/>
+     <property name="host" value="localhost"/>
+     <property name="host" value="5000"/>
+     <property name="tcpOptions">
+        <map>
+          <entry key="" value="true"/>
+        </map>
+     </property>
+  </bean>	
+</beans>
