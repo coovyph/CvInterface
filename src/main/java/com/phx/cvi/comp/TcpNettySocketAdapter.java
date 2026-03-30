@@ -8,9 +8,11 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
@@ -32,15 +34,16 @@ public class TcpNettySocketAdapter<T extends IMsg> implements ISocketAdapter{
 
 	private Map<String,Boolean> tcpOptions; 
 
-	private TcpHandler<T> tcpHandler;
 
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
 	private Channel hostChannel;
+	
+	ChannelInitializer<SocketChannel> ch;
 
 
-	public TcpNettySocketAdapter(TcpHandler<T> inTcpHandler) {
-		this.tcpHandler = inTcpHandler;
+	public TcpNettySocketAdapter(ChannelInitializer<SocketChannel> ich) {
+		this.ch = ich;
 	}
 
 	public void setSocketType(int type) {
@@ -49,6 +52,14 @@ public class TcpNettySocketAdapter<T extends IMsg> implements ISocketAdapter{
 	@Override
 	public int getSocketType() {
 		return this.socketType;
+	}
+	
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 	public void setMaxSocketSessions(int socketSessions) {
@@ -71,11 +82,14 @@ public class TcpNettySocketAdapter<T extends IMsg> implements ISocketAdapter{
 		ServerBootstrap bootstrap = new ServerBootstrap();
 		bootstrap.group(this.bossGroup, this.workerGroup)
 		.channel(NioServerSocketChannel.class)
-		.childHandler(this.tcpHandler);
+		.childHandler(this.ch);
 
 		ChannelFuture future = null;
 		try{
 			future = bootstrap.bind(this.port).sync();
+			
+			log.info("Host listening at port {}",this.port);
+			
 		}catch(InterruptedException ie) {
 			log.error("InterruptedException occurs ", ie);
 			return;
@@ -96,7 +110,7 @@ public class TcpNettySocketAdapter<T extends IMsg> implements ISocketAdapter{
 			bootstrap.option(ChannelOption.valueOf(k), v);
 		});
 
-		bootstrap.handler(this.tcpHandler);
+		bootstrap.handler(this.ch);
 
 		ChannelFuture future = null;
 		try{
