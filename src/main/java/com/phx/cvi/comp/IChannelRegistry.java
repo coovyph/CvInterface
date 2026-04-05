@@ -9,8 +9,8 @@ import io.netty.channel.Channel;
  */
 public interface IChannelRegistry {
 	public String constructChannelName(Channel c);
-	public void add(Channel ch);
-	public void remove(Channel ch);
+	public boolean add(Channel ch);
+	public boolean remove(Channel ch);
 	public Set<String> keySet();
 	public Channel getChannel(String name);
 }

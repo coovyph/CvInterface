@@ -15,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @Sharable
 public class TcpChannelValidationHandler extends ChannelInboundHandlerAdapter{
 	private Map<String,Integer> ipMap;
+	private IChannelRegistry channelRegistry;
 
-	public TcpChannelValidationHandler() {
+	public TcpChannelValidationHandler(IChannelRegistry inChannelRegistry) {
 		this.ipMap = new HashMap<>();
+		this.channelRegistry = inChannelRegistry;
 	}
 
 	public void append(String ip, int port) {
@@ -46,13 +48,20 @@ public class TcpChannelValidationHandler extends ChannelInboundHandlerAdapter{
 	}
 
 	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		if(!this.channelRegistry.remove(ctx.channel()))
+			super.channelInactive(ctx);		
+	}
+
+	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		Channel c = ctx.channel();
 		if(!validateRemoteAddress(c)) {
 			ctx.close();
 			return;
 		}
-		super.channelActive(ctx);
+		if(this.channelRegistry.add(c))
+			super.channelActive(ctx);
 	}
 
 }
