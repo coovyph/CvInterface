@@ -7,21 +7,25 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * handling incoming message
  */
 @Sharable
+@Slf4j
 public class IsoTcpHandler extends SimpleChannelInboundHandler<IsoMsg>{
 
 	private ITcpInterface<IsoMsg> busInterface;
 	private IMux<IsoMsg> mux;
+	private IChannelRegistry channelRegistry;
 
 
-	public IsoTcpHandler(ITcpInterface<IsoMsg> iBusInterface,IMux<IsoMsg> iMux) {
+	public IsoTcpHandler(ITcpInterface<IsoMsg> iBusInterface,IChannelRegistry iChannelRegistry, IMux<IsoMsg> iMux) {
 		super();
 		this.busInterface = iBusInterface;
 		this.mux = iMux;
+		this.channelRegistry = iChannelRegistry;
 	}
 
 	/*on channel connected*/
@@ -36,14 +40,10 @@ public class IsoTcpHandler extends SimpleChannelInboundHandler<IsoMsg>{
 		this.busInterface.onInActiveSession(ctx.channel());
 	}
 
-	protected String constructChannelName(Channel ch) {
-		//sementara
-		return ch.toString();
-	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, IsoMsg msg) throws Exception {
-		String channelName = constructChannelName(ctx.channel());
+		String channelName = this.channelRegistry.constructChannelName(ctx.channel());
 		if(msg.isRequest()) {
 			this.busInterface.processRequest(channelName, msg);
 		}else {

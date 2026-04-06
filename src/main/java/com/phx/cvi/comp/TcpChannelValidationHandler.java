@@ -49,7 +49,7 @@ public class TcpChannelValidationHandler extends ChannelInboundHandlerAdapter{
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		if(!this.channelRegistry.remove(ctx.channel()))
+		if(this.channelRegistry.remove(ctx.channel()))
 			super.channelInactive(ctx);		
 	}
 

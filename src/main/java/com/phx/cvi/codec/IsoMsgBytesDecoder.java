@@ -14,12 +14,14 @@ import com.cvj.msg.IsoMsg;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Author      : Hendra (Coovy)
  * Date	       : 2026-04-04
  * Description : decode raw message bytes to IsoMsg object
  */
+@Slf4j
 public class IsoMsgBytesDecoder extends SimpleChannelInboundHandler<ByteBuf>{
 	private IsoMsgEncoder msgEncoder;
 
@@ -40,8 +42,10 @@ public class IsoMsgBytesDecoder extends SimpleChannelInboundHandler<ByteBuf>{
 		byteBuf.readBytes(msgBytes);
 		try {
 			this.msgEncoder.decode(msgBytes, 0, msg);
+			log.info("Incoming: \n{}",msg.writeDebugString("  "));
 			ctx.fireChannelRead(msg);
 		}catch(EncDecException e) {
+			log.error("Exception message is \n{}",msg.writeDebugString("  "));
 			ctx.fireExceptionCaught(e);
 		}
 	}

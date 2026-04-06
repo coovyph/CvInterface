@@ -50,6 +50,7 @@ public class TcpChannelRegistry implements IChannelRegistry{
 	@Override
 	public boolean remove(Channel ch) {
 		String name = constructChannelName(ch);
+		this.keys.remove(name);
 		Channel oldChannel = this.channels.remove(name);
 		if(oldChannel == null) {
 			return !this.removeOldChannel;

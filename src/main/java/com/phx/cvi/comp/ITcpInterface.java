@@ -11,4 +11,6 @@ public interface ITcpInterface<T extends IMsg> {
 	public void processRequest(String reqChannelName,T msg);
 	public void processResponse(String reqChannelName,String rspChannelName,T reqMsg,T msg);
 	public void onTimeout(String reqChannelName,T msg);
+	public boolean isSignedOn();
+	public boolean isConnected();
 }
