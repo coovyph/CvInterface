@@ -1,0 +1,18 @@
+<interface name="core" enabled="true">
+   <bus-service>coreInterface</bus-service>
+   <sockets>
+      <socket name="sap-1" class="com.phx.cvi.comp.impl.IsoNettySocketAdapter">
+         <ssl>
+           <certFile path=""/>
+           <keyFile path=""/>
+         </ssl>
+         <type>client</type>
+         <host>127.0.0.1</host>
+         <port>5000</port>
+         <options>
+            <option id="SO_KEEPALIVE" value="true"/>
+            <option id="TCP_NODELAY" value="true"/>
+         </options>
+      </socket>
+   </sockets>
+</interface>

@@ -1,0 +1,7 @@
+<socket name="test123">
+  <tran-service>incoming</tran-service>
+  <type></type>
+  <ip></ip>
+  <port></port>
+  <socket-factoy></socket-factoy>
+</socket>
